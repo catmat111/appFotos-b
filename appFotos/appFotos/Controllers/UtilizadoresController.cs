@@ -54,16 +54,33 @@ namespace appFotos.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,NIF,Telemovel,Morada,CodPostal,Pais")] Utilizadores utilizadores)
+        public async Task<IActionResult> Create([Bind("Nome,NIF,Telemovel,Morada,CodPostal,Pais")] Utilizadores utilizador)
         {
+            // Verifica se já existe um utilizador com o mesmo NIF
+            bool nifExiste = await _context.Utilizadores.AnyAsync(u => u.NIF == utilizador.NIF);
+            bool telExiste = await _context.Utilizadores.AnyAsync(u => u.Telemovel == utilizador.Telemovel);
+
+            if (nifExiste)
+            {
+                ModelState.AddModelError("NIF", "Este NIF já está em uso. Insira um NIF diferente.");
+            }
+            
+            if (telExiste)
+            {
+                ModelState.AddModelError("Telemovel", "Este Telemovel já está em uso. Insira um Telemóvel diferente.");
+            }
+            
+
             if (ModelState.IsValid)
             {
-                _context.Add(utilizadores);
+                _context.Add(utilizador);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(utilizadores);
+
+            return View(utilizador);
         }
+
 
         // GET: Utilizadores/Edit/5
         public async Task<IActionResult> Edit(int? id)

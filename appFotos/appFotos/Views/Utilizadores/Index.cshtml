@@ -51,7 +51,10 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Ver Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;"
+                      onsubmit="return confirm('Tem certeza que deseja apagar este utilizador?');">
+                    <button type="submit" class="btn btn-danger">Apagar</button>
+                </form>
             </td>
         </tr>
 }
